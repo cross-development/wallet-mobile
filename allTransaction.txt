@@ -1,0 +1,10 @@
+{
+    "amount": 200,
+    "balanceAfter": 4200,
+    "categoryId": "d9ee2284-4673-44f4-ab76-6258512ea409",
+    "comment": "Продал кота",
+    "id": "94f20496-c838-4bff-a48e-78e4a80087a2",
+    "transactionDate": "2021-02-03",
+    "type": "INCOME",
+    "userId": "f1206e49-56f9-444b-bde3-d3f5852dd52f",
+  }

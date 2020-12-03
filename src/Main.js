@@ -1,7 +1,9 @@
 //Core
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+//Components
 import { NavigationContainer } from '@react-navigation/native';
+import AppBar from './components/AppBar';
 //Router
 import { useRoute } from './router/router';
 //Redux
@@ -23,7 +25,13 @@ const Main = () => {
 
 	const routing = useRoute(user);
 
-	return <NavigationContainer>{routing}</NavigationContainer>;
+	return (
+		<NavigationContainer>
+			{user && <AppBar />}
+
+			{routing}
+		</NavigationContainer>
+	);
 };
 
 export default Main;

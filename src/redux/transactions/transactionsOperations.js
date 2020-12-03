@@ -40,7 +40,7 @@ const updateTransaction = transactionId => dispatch => {
 	//   }
 };
 
-const removeTransaction = transactionId => dispatch => {
+const removeTransaction = ({ transactionId }) => dispatch => {
 	dispatch(transactionsActions.removeTransactionRequest());
 
 	axios

@@ -26,7 +26,7 @@ const AppBar = () => {
 const styles = StyleSheet.create({
 	container: {
 		flexDirection: 'row',
-		backgroundColor: '#E7EAF2',
+		backgroundColor: '#fff',
 		paddingTop: 40,
 		paddingBottom: 10,
 		paddingHorizontal: 20,
@@ -43,13 +43,13 @@ const styles = StyleSheet.create({
 
 	logoutBtn: {
 		backgroundColor: '#507bfc',
-		borderRadius: 10,
+		borderRadius: 6,
 		justifyContent: 'center',
 		alignItems: 'center',
 	},
 
 	buttonLabel: {
-		color: '#fffaf0',
+		color: '#fff',
 		fontSize: 16,
 		flex: 1,
 		textAlignVertical: 'center',

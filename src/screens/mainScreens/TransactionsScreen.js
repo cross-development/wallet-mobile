@@ -4,9 +4,11 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 //Redux
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { transactionsOperations } from '../../redux/transactions';
 
 export default function TransactionsScreen() {
+	const dispatch = useDispatch();
 	const { user } = useSelector(state => state.auth);
 	const { items: transactions, categories } = useSelector(state => state.transactions);
 
@@ -15,11 +17,8 @@ export default function TransactionsScreen() {
 	// 	categoryId,
 	// ]);
 
-	const removeTransaction = event => {
-		event.persist();
-		console.log(event);
-	};
-	// dispatch(transactionsOperations.removeTransaction(nativeID));
+	const removeTransaction = transactionId =>
+		dispatch(transactionsOperations.removeTransaction({ transactionId }));
 
 	return (
 		<View style={styles.container}>
@@ -32,39 +31,39 @@ export default function TransactionsScreen() {
 				<FlatList
 					data={transactions}
 					renderItem={({ item }) => (
-						<View style={styles.commentContainer}>
-							<View>
-								<Text>Дата</Text>
+						<View style={styles.transactionContainer(item.type)}>
+							<View style={styles.tableRow}>
+								<Text style={styles.rowTitle}>Дата</Text>
 								<Text>{item.transactionDate}</Text>
 							</View>
-							<View>
-								<Text>Тип</Text>
+							<View style={styles.tableRow}>
+								<Text style={styles.rowTitle}>Тип</Text>
 								<Text>{item.type === 'INCOME' ? '+' : '-'}</Text>
 							</View>
-							<View>
-								<Text>Категория</Text>
+							<View style={styles.tableRow}>
+								<Text style={styles.rowTitle}>Категория</Text>
 								<Text>{item.categoryId}</Text>
 							</View>
-							<View>
-								<Text>Комментарий</Text>
+							<View style={styles.tableRow}>
+								<Text style={styles.rowTitle}>Комментарий</Text>
 								<Text>{item.comment}</Text>
 							</View>
-							<View>
-								<Text>Сумма</Text>
-								<Text>{item.amount}</Text>
+							<View style={styles.tableRow}>
+								<Text style={styles.rowTitle}>Сумма</Text>
+								<Text style={styles.amount(item.type)}>{item.amount}</Text>
 							</View>
-							<View>
-								<Text>Баланс</Text>
+							<View style={styles.tableRow}>
+								<Text style={styles.rowTitle}>Баланс</Text>
 								<Text>{item.balanceAfter}</Text>
 							</View>
-							<View>
+							<View style={styles.deleteWrap}>
 								<TouchableOpacity
-									nativeID={item.id}
-									activeOpacity={0.6}
-									style={styles.removeBtn}
-									onPress={removeTransaction}
+									id={item.id}
+									activeOpacity={0.8}
+									style={styles.deleteBtn}
+									onPress={() => removeTransaction(item.id)}
 								>
-									<Text nativeID={item.id} style={styles.sendLabel}>
+									<Text style={styles.buttonLabel} nativeID={item.id}>
 										Delete
 									</Text>
 								</TouchableOpacity>
@@ -81,7 +80,7 @@ export default function TransactionsScreen() {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: '#fff',
+		backgroundColor: '#E7EAF2',
 	},
 
 	currentBalance: {
@@ -97,53 +96,52 @@ const styles = StyleSheet.create({
 		fontWeight: 'bold',
 	},
 
-	commentContainer: {
-		borderWidth: 1,
-		borderColor: '#20b2aa',
+	transactionContainer: typeColor => ({
+		borderRadius: 10,
 		marginHorizontal: 10,
-		padding: 10,
+		paddingTop: 10,
+		paddingBottom: 10,
 		marginBottom: 10,
+		backgroundColor: '#fff',
+		borderLeftWidth: 10,
+		borderLeftColor: typeColor === 'INCOME' ? '#24CCA7' : '#FF6596',
+	}),
+
+	amount: typeColor => ({
+		color: typeColor === 'INCOME' ? '#24CCA7' : '#FF6596',
+	}),
+
+	tableRow: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		paddingVertical: 7,
+		borderBottomWidth: 1,
+		borderBottomColor: '#d0d0d0',
+		paddingHorizontal: 15,
+	},
+
+	rowTitle: {
+		fontWeight: '700',
+	},
+
+	deleteWrap: {
+		justifyContent: 'flex-end',
+		flexDirection: 'row',
+		paddingTop: 15,
+		paddingRight: 15,
+	},
+
+	deleteBtn: {
+		backgroundColor: '#507bfc',
+		borderRadius: 6,
+		alignItems: 'center',
+		width: 100,
+		paddingVertical: 5,
+	},
+
+	buttonLabel: {
+		color: '#fff',
+		fontSize: 16,
+		textAlignVertical: 'center',
 	},
 });
-
-// const styles = StyleSheet.create({
-
-// commentContainer: {
-// 	borderWidth: 1,
-// 	borderColor: '#20b2aa',
-// 	marginHorizontal: 10,
-// 	padding: 10,
-// 	marginBottom: 10,
-// },
-
-// 	sendBtn: {
-// 		marginHorizontal: 30,
-// 		height: 40,
-// 		borderWidth: 2,
-// 		borderColor: '#20b2aa',
-// 		borderRadius: 10,
-// 		marginTop: 20,
-// 		justifyContent: 'center',
-// 		alignItems: 'center',
-// 		marginBottom: 30,
-// 	},
-
-// 	inputContainer: {
-// 		marginHorizontal: 10,
-// 		marginBottom: 20,
-// 	},
-
-// 	input: {
-// 		height: 50,
-// 		borderWidth: 1,
-// 		borderColor: 'transparent',
-// 		borderBottomColor: '#20b2aa',
-// 	},
-
-// 	sendLabel: {
-// 		color: '#20b2aa',
-// 		fontSize: 20,
-// 	},
-// });
-
-// export default CommentsScreen;

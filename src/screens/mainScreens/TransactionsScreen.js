@@ -1,8 +1,9 @@
 //Core
-import React, { useMemo } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import TransactionItem from '../../components/TransactionItem';
 //Redux
 import { useSelector, useDispatch } from 'react-redux';
 import { transactionsOperations } from '../../redux/transactions';
@@ -12,66 +13,46 @@ export default function TransactionsScreen() {
 	const { user } = useSelector(state => state.auth);
 	const { items: transactions, categories } = useSelector(state => state.transactions);
 
-	// const category = useMemo(() => categories.find(({ id }) => id === categoryId), [
-	// 	categories,
-	// 	categoryId,
-	// ]);
+	const currentBalance = transactions.length
+		? transactions[transactions.length - 1].balanceAfter
+		: user.balance;
+
+	const balance = currentBalance.toLocaleString('ua-UA', { minimumFractionDigits: 2 });
 
 	const removeTransaction = transactionId =>
 		dispatch(transactionsOperations.removeTransaction({ transactionId }));
 
+	const renderItem = ({ item }) => {
+		const { transactionDate, type, categoryId, comment, amount, balanceAfter, id } = item;
+
+		const prettyDate = new Date(transactionDate).toLocaleDateString();
+		const prettyAmount = amount.toLocaleString('ua-UA', { minimumFractionDigits: 2 });
+		const prettyBalance = balanceAfter.toLocaleString('ua-UA', { minimumFractionDigits: 2 });
+
+		const category = categories.find(({ id }) => id === categoryId);
+
+		const props = {
+			id,
+			type,
+			comment,
+			prettyDate,
+			prettyAmount,
+			prettyBalance,
+			categoryName: category?.name,
+		};
+
+		return <TransactionItem props={props} onRemoveTransaction={removeTransaction} />;
+	};
+
 	return (
 		<View style={styles.container}>
 			<SafeAreaView style={styles.container}>
-				<View style={styles.currentBalance}>
-					<Text style={styles.balance}>Баланс:</Text>
-					<Text style={styles.balance}>₴ {user.balance}</Text>
+				<View style={styles.balanceWrap}>
+					<Text style={styles.balance}>Ваш баланс:</Text>
+					<Text style={styles.balance}>₴ {balance}</Text>
 				</View>
 
-				<FlatList
-					data={transactions}
-					renderItem={({ item }) => (
-						<View style={styles.transactionContainer(item.type)}>
-							<View style={styles.tableRow}>
-								<Text style={styles.rowTitle}>Дата</Text>
-								<Text>{item.transactionDate}</Text>
-							</View>
-							<View style={styles.tableRow}>
-								<Text style={styles.rowTitle}>Тип</Text>
-								<Text>{item.type === 'INCOME' ? '+' : '-'}</Text>
-							</View>
-							<View style={styles.tableRow}>
-								<Text style={styles.rowTitle}>Категория</Text>
-								<Text>{item.categoryId}</Text>
-							</View>
-							<View style={styles.tableRow}>
-								<Text style={styles.rowTitle}>Комментарий</Text>
-								<Text>{item.comment}</Text>
-							</View>
-							<View style={styles.tableRow}>
-								<Text style={styles.rowTitle}>Сумма</Text>
-								<Text style={styles.amount(item.type)}>{item.amount}</Text>
-							</View>
-							<View style={styles.tableRow}>
-								<Text style={styles.rowTitle}>Баланс</Text>
-								<Text>{item.balanceAfter}</Text>
-							</View>
-							<View style={styles.deleteWrap}>
-								<TouchableOpacity
-									id={item.id}
-									activeOpacity={0.8}
-									style={styles.deleteBtn}
-									onPress={() => removeTransaction(item.id)}
-								>
-									<Text style={styles.buttonLabel} nativeID={item.id}>
-										Delete
-									</Text>
-								</TouchableOpacity>
-							</View>
-						</View>
-					)}
-					keyExtractor={item => item.id}
-				/>
+				<FlatList data={transactions} renderItem={renderItem} keyExtractor={item => item.id} />
 			</SafeAreaView>
 		</View>
 	);
@@ -83,65 +64,22 @@ const styles = StyleSheet.create({
 		backgroundColor: '#E7EAF2',
 	},
 
-	currentBalance: {
+	balanceWrap: {
 		alignItems: 'center',
 		flexDirection: 'row',
 		justifyContent: 'space-evenly',
-		marginBottom: 10,
-		marginTop: 10,
+		marginVertical: 10,
+		marginHorizontal: 30,
+		paddingVertical: 15,
+		backgroundColor: '#fff',
+		borderTopLeftRadius: 30,
+		borderTopRightRadius: 30,
+		borderBottomLeftRadius: 30,
+		borderBottomRightRadius: 30,
 	},
 
 	balance: {
 		fontSize: 20,
 		fontWeight: 'bold',
-	},
-
-	transactionContainer: typeColor => ({
-		borderRadius: 10,
-		marginHorizontal: 10,
-		paddingTop: 10,
-		paddingBottom: 10,
-		marginBottom: 10,
-		backgroundColor: '#fff',
-		borderLeftWidth: 10,
-		borderLeftColor: typeColor === 'INCOME' ? '#24CCA7' : '#FF6596',
-	}),
-
-	amount: typeColor => ({
-		color: typeColor === 'INCOME' ? '#24CCA7' : '#FF6596',
-	}),
-
-	tableRow: {
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		paddingVertical: 7,
-		borderBottomWidth: 1,
-		borderBottomColor: '#d0d0d0',
-		paddingHorizontal: 15,
-	},
-
-	rowTitle: {
-		fontWeight: '700',
-	},
-
-	deleteWrap: {
-		justifyContent: 'flex-end',
-		flexDirection: 'row',
-		paddingTop: 15,
-		paddingRight: 15,
-	},
-
-	deleteBtn: {
-		backgroundColor: '#507bfc',
-		borderRadius: 6,
-		alignItems: 'center',
-		width: 100,
-		paddingVertical: 5,
-	},
-
-	buttonLabel: {
-		color: '#fff',
-		fontSize: 16,
-		textAlignVertical: 'center',
 	},
 });

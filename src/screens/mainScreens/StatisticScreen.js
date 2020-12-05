@@ -1,13 +1,24 @@
 //Core
-import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import React from 'react';
+//Components
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import Statistics from '../../components/Statistics';
+//Redux
+import { useSelector } from 'react-redux';
 
 export default function StatisticScreen() {
-    return (
-        <View>
-            <Text>StatisticScreens</Text>
-        </View>
-    )
+	const { loading } = useSelector(state => state.transactions);
+
+	return (
+		<View style={styles.container}>
+			{loading ? <ActivityIndicator size={100} color="#0000ff" /> : <Statistics />}
+		</View>
+	);
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		justifyContent: 'center',
+	},
+});

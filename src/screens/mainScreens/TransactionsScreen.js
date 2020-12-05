@@ -7,6 +7,8 @@ import TransactionItem from '../../components/TransactionItem';
 //Redux
 import { useSelector, useDispatch } from 'react-redux';
 import { transactionsOperations } from '../../redux/transactions';
+//Utils
+import prettyNumber from '../../utils/prettyNumber';
 
 export default function TransactionsScreen() {
 	const dispatch = useDispatch();
@@ -26,18 +28,16 @@ export default function TransactionsScreen() {
 		const { transactionDate, type, categoryId, comment, amount, balanceAfter, id } = item;
 
 		const prettyDate = new Date(transactionDate).toLocaleDateString();
-		const prettyAmount = amount.toLocaleString('ua-UA', { minimumFractionDigits: 2 });
-		const prettyBalance = balanceAfter.toLocaleString('ua-UA', { minimumFractionDigits: 2 });
 
 		const category = categories.find(({ id }) => id === categoryId);
 
 		const props = {
 			id,
 			type,
+			amount: prettyNumber.getPrettyNumber(amount),
 			comment,
 			prettyDate,
-			prettyAmount,
-			prettyBalance,
+			balanceAfter: prettyNumber.getPrettyNumber(balanceAfter),
 			categoryName: category?.name,
 		};
 
@@ -49,7 +49,7 @@ export default function TransactionsScreen() {
 			<SafeAreaView style={styles.container}>
 				<View style={styles.balanceWrap}>
 					<Text style={styles.balance}>Ваш баланс:</Text>
-					<Text style={styles.balance}>₴ {balance}</Text>
+					<Text style={styles.balance}>₴ {prettyNumber.getPrettyNumber(balance)}</Text>
 				</View>
 
 				<FlatList data={transactions} renderItem={renderItem} keyExtractor={item => item.id} />

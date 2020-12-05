@@ -3,7 +3,7 @@ import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 
 export default function TransactionItem({ props, onRemoveTransaction }) {
-	const { id, prettyAmount, categoryName, type, comment, prettyBalance, prettyDate } = props;
+	const { id, amount, categoryName, type, comment, balanceAfter, prettyDate } = props;
 
 	return (
 		<View style={styles.transactionContainer(type)}>
@@ -25,11 +25,11 @@ export default function TransactionItem({ props, onRemoveTransaction }) {
 			</View>
 			<View style={styles.tableRow}>
 				<Text style={styles.rowTitle}>Сумма</Text>
-				<Text style={styles.amount(type)}>{prettyAmount}</Text>
+				<Text style={styles.amount(type)}>{amount}</Text>
 			</View>
 			<View style={styles.tableRow}>
 				<Text style={styles.rowTitle}>Баланс</Text>
-				<Text>{prettyBalance}</Text>
+				<Text>{balanceAfter}</Text>
 			</View>
 			<View style={styles.deleteWrap}>
 				<TouchableOpacity

@@ -14,7 +14,7 @@ const Main = () => {
 	const dispatch = useDispatch();
 	const { user } = useSelector(state => state.auth);
 
-	useEffect(() => dispatch(authOperations.getCurrentUser()), []);
+	useEffect(() => dispatch(authOperations.getCurrentUser()), [dispatch]);
 
 	useEffect(() => {
 		if (user) {

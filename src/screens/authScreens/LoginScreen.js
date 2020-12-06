@@ -40,8 +40,8 @@ export default function LoginScreen({ navigation }) {
 	};
 
 	const handleSubmit = () => {
-		setState(initialState);
 		dispatch(authOperations.userSignIn(state));
+		setState(initialState);
 	};
 
 	const changeInputEmail = value => setState(prevState => ({ ...prevState, email: value }));

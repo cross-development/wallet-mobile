@@ -3,7 +3,11 @@ import axios from 'axios';
 //Redux
 import transactionsActions from './transactionsActions';
 
-axios.defaults.baseURL = 'https://sheltered-sea-54747.herokuapp.com';
+const proxyurl = 'https://cors-anywhere.herokuapp.com/';
+
+//Axios defaults config
+axios.defaults.baseURL = `https://sheltered-sea-54747.herokuapp.com`;
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
 const addTransaction = ({ transaction }) => dispatch => {
 	dispatch(transactionsActions.addTransactionRequest());
@@ -21,23 +25,6 @@ const getTransactions = () => dispatch => {
 		.get('/api/transactions')
 		.then(({ data }) => dispatch(transactionsActions.getTransactionsSuccess(data)))
 		.catch(error => dispatch(transactionsActions.getTransactionsFailure(error)));
-};
-
-const updateTransaction = transactionId => dispatch => {
-	dispatch(transactionsActions.updateTransactionRequest());
-
-	axios
-		.patch(`/api/transactions/${transactionId}`)
-		.then(() => dispatch(transactionsActions.updateTransactionSuccess(transactionId)))
-		.catch(error => dispatch(transactionsActions.updateTransactionFailure(error)));
-
-	// {
-	// 	"transactionDate": "string",
-	// 	"type": "INCOME",
-	// 	"categoryId": "string",
-	// 	"comment": "string",
-	// 	"amount": 0
-	//   }
 };
 
 const removeTransaction = ({ transactionId }) => dispatch => {
@@ -70,7 +57,6 @@ const getTransactionsSummary = (month, year) => dispatch => {
 const transactionsOperations = {
 	addTransaction,
 	getTransactions,
-	updateTransaction,
 	removeTransaction,
 
 	getTransactionCategories,

@@ -7,14 +7,12 @@ import transactionsActions from './transactionsActions';
 //Items reducer handler
 const addTransaction = (state, { payload }) => [...state, payload];
 const getTransactions = (state, { payload }) => payload;
-const updateTransaction = (state, { payload }) => payload; //!FIXES
 const removeTransaction = (state, { payload }) => state.filter(({ id }) => id !== payload);
 
 //Items reducer
 const items = createReducer([], {
 	[transactionsActions.addTransactionSuccess]: addTransaction,
 	[transactionsActions.getTransactionsSuccess]: getTransactions,
-	[transactionsActions.updateTransactionSuccess]: updateTransaction,
 	[transactionsActions.removeTransactionSuccess]: removeTransaction,
 });
 
@@ -32,7 +30,6 @@ const summary = createReducer(null, {
 const error = createReducer(null, {
 	[transactionsActions.addTransactionFailure]: (state, { payload }) => payload,
 	[transactionsActions.getTransactionsFailure]: (state, { payload }) => payload,
-	[transactionsActions.updateTransactionFailure]: (state, { payload }) => payload,
 	[transactionsActions.removeTransactionFailure]: (state, { payload }) => payload,
 	[transactionsActions.getTransactionCategoryFailure]: (state, { payload }) => payload,
 	[transactionsActions.getTransactionsSummaryFailure]: (state, { payload }) => payload,

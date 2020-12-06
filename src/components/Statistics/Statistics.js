@@ -9,8 +9,6 @@ import StatisticsTable from './StatisticsTable';
 import StatisticsControls from './StatisticsControls';
 //Redux
 import { useSelector } from 'react-redux';
-//Utils
-import prettyNumber from '../../utils/prettyNumber';
 
 export default function StatisticScreen() {
 	const { summary } = useSelector(state => state.transactions);
@@ -55,7 +53,9 @@ export default function StatisticScreen() {
 						style={{ labels: { fontSize: 0 } }}
 						padding={{ top: 0, bottom: 0, left: 0, right: 0 }}
 					/>
-					<Text style={styles.currentBalance}>₴ {prettyNumber.getPrettyNumber(balance)}</Text>
+					<Text style={styles.currentBalance}>
+						₴ {balance.toLocaleString('ua-UA', { minimumFractionDigits: 2 })}
+					</Text>
 				</View>
 			),
 		[balance, chartColorsNew, summaryValue],

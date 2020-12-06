@@ -8,12 +8,8 @@ import DefaultScreen from '../nestedScreens/DefaultScreen';
 const NestedScreen = createStackNavigator();
 
 const TransactionsScreen = () => (
-	<NestedScreen.Navigator>
-		<NestedScreen.Screen
-			name="DefaultScreen"
-			component={DefaultScreen}
-			options={{ headerShown: false }}
-		/>
+	<NestedScreen.Navigator screenOptions={{ headerShown: false }}>
+		<NestedScreen.Screen name="DefaultScreen" component={DefaultScreen} />
 		<NestedScreen.Screen name="FormScreen" component={FormScreen} />
 	</NestedScreen.Navigator>
 );

@@ -1,5 +1,5 @@
 //Core
-import React from 'react';
+import React, { useMemo } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -8,18 +8,11 @@ import TransactionItem from '../../components/Transactions/TransactionItem';
 import { useSelector, useDispatch } from 'react-redux';
 import { transactionsOperations } from '../../redux/transactions';
 //Utils
-import prettyNumber from '../../utils/prettyNumber';
+// import prettyNumber from '../../utils/prettyNumber';
 
 export default function TransactionsScreen({ navigation }) {
 	const dispatch = useDispatch();
-	const { user } = useSelector(state => state.auth);
 	const { items: transactions, categories } = useSelector(state => state.transactions);
-
-	const currentBalance = transactions.length
-		? transactions[transactions.length - 1].balanceAfter
-		: user.balance;
-
-	const balance = currentBalance.toLocaleString('ua-UA', { minimumFractionDigits: 2 });
 
 	const removeTransaction = transactionId =>
 		dispatch(transactionsOperations.removeTransaction({ transactionId }));
@@ -34,25 +27,37 @@ export default function TransactionsScreen({ navigation }) {
 		const props = {
 			id,
 			type,
-			amount: prettyNumber.getPrettyNumber(amount),
+			amount: amount.toLocaleString('ua-UA', { minimumFractionDigits: 2 }),
 			comment,
 			prettyDate,
-			balanceAfter: prettyNumber.getPrettyNumber(balanceAfter),
+			balanceAfter: balanceAfter.toLocaleString('ua-UA', { minimumFractionDigits: 2 }),
 			categoryName: category?.name,
 		};
 
 		return <TransactionItem props={props} onRemoveTransaction={removeTransaction} />;
 	};
 
+	const memoTransactions = useMemo(
+		() =>
+			[...transactions]
+				.sort((a, b) => Date.parse(b.balanceAfter) - Date.parse(a.balanceAfter))
+				.sort((a, b) => Date.parse(b.transactionDate) - Date.parse(a.transactionDate)),
+		[transactions],
+	);
+
+	const balance = memoTransactions[0]?.balanceAfter.toLocaleString('ua-UA', {
+		minimumFractionDigits: 2,
+	});
+
 	return (
 		<View style={styles.container}>
 			<SafeAreaView style={styles.container}>
 				<View style={styles.balanceWrap}>
 					<Text style={styles.balance}>Ваш баланс:</Text>
-					<Text style={styles.balance}>₴ {prettyNumber.getPrettyNumber(balance)}</Text>
+					<Text style={styles.balance}>₴ {balance || '0.00'}</Text>
 				</View>
 
-				<FlatList data={transactions} renderItem={renderItem} keyExtractor={item => item.id} />
+				<FlatList data={memoTransactions} renderItem={renderItem} keyExtractor={item => item.id} />
 
 				<TouchableOpacity
 					activeOpacity={0.8}
@@ -100,7 +105,7 @@ const styles = StyleSheet.create({
 		borderBottomRightRadius: 10,
 		borderTopLeftRadius: 10,
 		borderTopRightRadius: 10,
-		backgroundColor: '#507bfc',
+		backgroundColor: '#24CCA7',
 	},
 
 	addBtnLabel: {

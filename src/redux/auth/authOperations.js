@@ -3,8 +3,10 @@ import axios from 'axios';
 //Redux
 import authActions from './authActions';
 
+const proxyurl = 'https://cors-anywhere.herokuapp.com/';
+
 //Axios defaults config
-axios.defaults.baseURL = 'https://sheltered-sea-54747.herokuapp.com';
+axios.defaults.baseURL = `https://sheltered-sea-54747.herokuapp.com`;
 
 const token = {
 	set(token) {
@@ -16,11 +18,11 @@ const token = {
 	},
 };
 
-const userSignUp = ({ email, password }) => dispatch => {
+const userSignUp = credentials => dispatch => {
 	dispatch(authActions.userSignUpRequest());
 
 	axios
-		.post('/api/auth/sign-up', { email, password })
+		.post('/api/auth/sign-up', credentials)
 		.then(({ data }) => {
 			token.set(data.token);
 			dispatch(authActions.userSignUpSuccess(data));
@@ -28,11 +30,11 @@ const userSignUp = ({ email, password }) => dispatch => {
 		.catch(error => dispatch(authActions.userSignUpFailure(error)));
 };
 
-const userSignIn = credential => dispatch => {
+const userSignIn = ({ email, password }) => dispatch => {
 	dispatch(authActions.userSignInRequest());
 
 	axios
-		.post('/api/auth/sign-in', credential)
+		.post('/api/auth/sign-in', { email, password })
 		.then(({ data }) => {
 			token.set(data.token);
 			dispatch(authActions.userSignInSuccess(data));

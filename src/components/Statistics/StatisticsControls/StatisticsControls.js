@@ -1,6 +1,6 @@
 //Core
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 //Components
 import { Picker } from '@react-native-picker/picker';
 //Redux
